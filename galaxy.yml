@@ -11,9 +11,7 @@ authors:
   - Catalin Stan <c01110011@users.noreply.github.com>
 
 description: >-
-  Ansible collection for Proton Pass integration. Retrieve secrets from Proton Pass
-  vaults using the official pass-cli. Features in-memory caching, URI syntax support,
-  and actionable error messages.
+  Ansible collection for Proton Pass integration. Retrieve secrets from Proton Pass vaults using the official pass-cli.
 license:
   - GPL-3.0-or-later
 
@@ -26,9 +24,6 @@ tags:
   - security
   - credentials
   - vault
-# TO-DO: maintain this list to reflect the collection's dependencies
-dependencies:
-  "ansible.utils": "*" # note: "*" selects the latest version available
 
 repository: https://github.com/c01110011/ansible-collection-protonpass
 documentation: https://github.com/c01110011/ansible-collection-protonpass/blob/main/c01110011/protonpass/README.md
