@@ -1,2 +1,2 @@
 ---
-requires_ansible: ">=3.12.13"
+requires_ansible: ">=2.16.0"

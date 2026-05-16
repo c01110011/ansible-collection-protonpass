@@ -23,23 +23,46 @@ DOCUMENTATION = """
       - Requires pass-cli to be installed and authenticated via C(pass-cli login).
     options:
       _terms:
-        description: Terms to lookup
-        required: True
+        description: Title of the item in the Proton Pass vault.
+        required: true
+        type: string
+      vault:
+        description: Name of the vault containing the item.
+        required: true
+        type: string
+      field:
+        description: Field name to retrieve from the item (e.g. C(password), C(username)).
+        required: false
+        type: string
+      totp:
+        description: Set to C(true) to retrieve the TOTP/2FA code instead of a field value.
+        required: false
+        type: bool
     notes:
+      - Exactly one of C(field) or C(totp) must be specified.
       - The user must authenticate via C(pass-cli login) before using this plugin.
       - Item titles containing spaces are supported.
 """
 
 EXAMPLES = """
-- name: Example usage of protonpass
+- name: Retrieve a password field
+  ansible.builtin.set_fact:
+    db_password: "{{ lookup('c01110011.protonpass.protonpass', 'My Database', vault='Personal', field='password') }}"
+
+- name: Retrieve a TOTP code
+  ansible.builtin.set_fact:
+    otp: "{{ lookup('c01110011.protonpass.protonpass', 'My Service', vault='Work', totp=true) }}"
+
+- name: Use directly in a task
   ansible.builtin.debug:
-    msg: "{{ lookup('protonpass', 'example_term') }}"
+    msg: "{{ lookup('c01110011.protonpass.protonpass', 'My Secret', vault='Personal', field='password') }}"
 """
 
 RETURN = """
 _list:
-  description: The list of values found by the lookup
+  description: Single-element list containing the retrieved value.
   type: list
+  elements: string
 """
 
 display = Display()

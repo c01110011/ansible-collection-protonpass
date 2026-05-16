@@ -1,78 +1,88 @@
-# C01110011 Protonpass Collection
+# c01110011.protonpass
 
-This repository contains the `c01110011.protonpass` Ansible Collection.
+Ansible lookup plugin for retrieving secrets from [Proton Pass](https://proton.me/pass) vaults
+using the official [pass-cli](https://github.com/protonpass/pass-cli).
 
-<!--start requires_ansible-->
-<!--end requires_ansible-->
+## Requirements
 
-## External requirements
+- Ansible Core >= 2.16
+- [pass-cli](https://github.com/protonpass/pass-cli) installed and authenticated
 
-Some modules and plugins require external libraries. Please check the
-requirements for each plugin or module you use in the documentation to find out
-which requirements are needed.
-
-## Included content
-
-<!--start collection content-->
-<!--end collection content-->
-
-## Using this collection
+Install and authenticate pass-cli before running any playbooks:
 
 ```bash
-    ansible-galaxy collection install c01110011.protonpass
+pass-cli login
 ```
 
-You can also include it in a `requirements.yml` file and install it via
-`ansible-galaxy collection install -r requirements.yml` using the format:
+## Installation
+
+```bash
+ansible-galaxy collection install c01110011.protonpass
+```
+
+Or add to `requirements.yml`:
 
 ```yaml
 collections:
   - name: c01110011.protonpass
 ```
 
-To upgrade the collection to the latest available version, run the following
-command:
+To pin a specific version:
+
+```bash
+ansible-galaxy collection install c01110011.protonpass:==1.0.0
+```
+
+To upgrade:
 
 ```bash
 ansible-galaxy collection install c01110011.protonpass --upgrade
 ```
 
-You can also install a specific version of the collection, for example, if you
-need to downgrade when something is broken in the latest version (please report
-an issue in this repository). Use the following syntax where `X.Y.Z` can be any
-[available version](https://galaxy.ansible.com/c01110011/protonpass):
+## Usage
 
-```bash
-ansible-galaxy collection install c01110011.protonpass:==X.Y.Z
+### Retrieve a field value
+
+```yaml
+- name: Get database password
+  ansible.builtin.set_fact:
+    db_password: "{{ lookup('c01110011.protonpass.protonpass', 'My Database', vault='Personal', field='password') }}"
 ```
 
-See
-[Ansible Using Collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html)
-for more details.
+### Retrieve a TOTP code
 
-## Release notes
+```yaml
+- name: Get TOTP code
+  ansible.builtin.set_fact:
+    otp: "{{ lookup('c01110011.protonpass.protonpass', 'My Service', vault='Work', totp=true) }}"
+```
 
-See the
-[changelog](https://github.com/ansible-collections/c01110011.protonpass/tree/main/CHANGELOG.rst).
+### Use directly in a task
 
-## Roadmap
+```yaml
+- name: Configure application
+  ansible.builtin.template:
+    src: config.j2
+    dest: /etc/app/config.yml
+  vars:
+    api_key: "{{ lookup('c01110011.protonpass.protonpass', 'App API Key', vault='Work', field='password') }}"
+```
 
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
+## Parameters
 
-## More information
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `_terms` | yes | string | Title of the item in Proton Pass |
+| `vault` | yes | string | Name of the vault containing the item |
+| `field` | no* | string | Field name to retrieve (e.g. `password`, `username`) |
+| `totp` | no* | bool | Set to `true` to retrieve the TOTP/2FA code |
 
-<!-- List out where the user can find additional information, such as working group meeting times, slack/matrix channels, or documentation for the product this collection automates. At a minimum, link to: -->
+\* Exactly one of `field` or `totp` must be specified.
 
-- [Ansible collection development forum](https://forum.ansible.com/c/project/collection-development/27)
-- [Ansible User guide](https://docs.ansible.com/ansible/devel/user_guide/index.html)
-- [Ansible Developer guide](https://docs.ansible.com/ansible/devel/dev_guide/index.html)
-- [Ansible Collections Checklist](https://docs.ansible.com/ansible/devel/community/collection_contributors/collection_requirements.html)
-- [Ansible Community code of conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html)
-- [The Bullhorn (the Ansible Contributor newsletter)](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn)
-- [News for Maintainers](https://forum.ansible.com/tag/news-for-maintainers)
+## Release Notes
 
-## Licensing
+See the [changelog](https://github.com/c01110011/ansible-collection-protonpass/blob/main/c01110011/protonpass/CHANGELOG.rst).
 
-GNU General Public License v3.0 or later.
+## License
 
-See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
+GNU General Public License v3.0 or later. See [LICENSE](https://www.gnu.org/licenses/gpl-3.0.txt).

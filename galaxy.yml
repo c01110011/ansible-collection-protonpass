@@ -47,6 +47,9 @@ build_ignore:
   - tests
   - molecule
   - .venv
+  - collections
+  - "*.tar.gz"
+  - publish_to_ansible_galaxy.py
   - venv
   - requirements-dev.txt
   - CONTRIBUTING.md
